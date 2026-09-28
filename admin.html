@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outil du webmestre — Famille Étoile-des-Îles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF6EC; --paper:#FFFDF9; --ink:#242B25;
+    --marigold:#F0A63B; --marigold-deep:#D88A1F;
+    --teal:#0F6B62; --teal-deep:#0A4C46;
+    --coral:#E5563F; --plum:#5C2A54;
+    --line: rgba(36,43,37,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:'Karla',sans-serif;font-size:15.5px;line-height:1.55;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0 0 .4em;}
+  a{color:var(--teal-deep);}
+  .wrap{max-width:920px;margin:0 auto;padding:36px 24px 90px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  header .mark{width:32px;height:32px;border-radius:50%;background:conic-gradient(from 200deg, var(--marigold), var(--coral), var(--teal), var(--marigold));flex:none;}
+  header h1{font-size:1.3rem;color:var(--teal-deep);margin:0;}
+  .subtitle{color:#5c6459;margin-bottom:28px;}
+  a.back{display:inline-block;margin-bottom:18px;font-weight:700;font-size:.88rem;text-decoration:none;}
+
+  .callout{
+    background:#FDF1DC;border:1px solid rgba(216,138,31,.35);border-radius:16px;
+    padding:18px 20px;margin-bottom:34px;font-size:.92rem;
+  }
+  .callout h3{font-size:1rem;color:var(--marigold-deep);margin-bottom:8px;}
+  .callout ol{margin:0;padding-left:20px;}
+  .callout li{margin-bottom:4px;}
+
+  .status-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:34px;
+  }
+  .status-bar .counts{font-size:.88rem;color:#3c4438;}
+  .status-bar .counts b{color:var(--teal-deep);}
+  .file-actions{display:flex;gap:10px;flex-wrap:wrap;}
+
+  .btn{border:none;padding:11px 20px;border-radius:999px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;}
+  .btn.primary{background:var(--coral);color:#fff;}
+  .btn.teal{background:var(--teal);color:#fff;}
+  .btn.ghost{background:transparent;border:1.5px solid var(--teal);color:var(--teal-deep);}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  input[type=file].hidden-file{display:none;}
+
+  section.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:26px 26px 22px;margin-bottom:26px;}
+  section.panel h2{font-size:1.15rem;color:var(--teal-deep);}
+  .panel .hint{color:#5c6459;font-size:.86rem;margin-top:-6px;margin-bottom:16px;}
+
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:.8rem;font-weight:700;color:#3c4438;}
+  .field input, .field select{padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-family:inherit;font-size:.94rem;background:#fff;}
+  @media (max-width:600px){ .field-row{grid-template-columns:1fr;} }
+
+  .rel-builder{display:flex;gap:10px;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;}
+  .rel-builder .field{flex:1;min-width:150px;}
+  .rel-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .rel-chip{background:#F2FBF9;border:1px solid rgba(15,107,98,.25);color:var(--teal-deep);padding:5px 10px 5px 12px;border-radius:999px;font-size:.8rem;display:flex;align-items:center;gap:8px;}
+  .rel-chip button{border:none;background:none;color:var(--coral);font-weight:700;cursor:pointer;}
+
+  .photo-input-row{display:flex;gap:14px;align-items:center;margin-bottom:14px;flex-wrap:wrap;}
+  .photo-preview{width:70px;height:70px;border-radius:12px;background:var(--cream);border:1px dashed var(--line);background-size:cover;background-position:center;flex:none;}
+
+  table.data-table{width:100%;border-collapse:collapse;margin-top:8px;}
+  table.data-table th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:#5c6459;padding:8px 10px;border-bottom:1.5px solid var(--ink);}
+  table.data-table td{padding:10px;border-bottom:1px solid var(--line);font-size:.88rem;vertical-align:middle;}
+  table.data-table .del-btn{border:none;background:none;color:var(--coral);font-weight:700;cursor:pointer;font-size:.85rem;}
+  .fam-block{margin-bottom:18px;}
+  .fam-block-head{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .fam-block-head h4{margin:0;font-family:'Fraunces',serif;font-size:1.02rem;color:var(--ink);}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--teal-deep);color:#fff;padding:12px 22px;border-radius:999px;font-size:.88rem;font-weight:600;
+    opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;z-index:99;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,-6px);}
+
+  table.data-table .edit-btn{border:none;background:none;color:var(--teal-deep);font-weight:700;cursor:pointer;font-size:.85rem;margin-right:12px;}
+  .fam-block-head .edit-btn{border:none;background:none;color:var(--teal-deep);font-weight:700;cursor:pointer;font-size:.85rem;}
+  .fam-block-actions{display:flex;gap:14px;}
+
+  .modal-bg{position:fixed;inset:0;background:rgba(36,43,37,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--paper);border-radius:20px;padding:26px;max-width:460px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal h3{color:var(--teal-deep);margin-bottom:16px;}
+  .modal-close{float:right;border:none;background:none;font-size:1.2rem;color:#8b9186;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">← Retour au site public</a>
+  <header><div class="mark"></div><h1>Outil du webmestre</h1></header>
+  <p class="subtitle">Famille Étoile-des-Îles — gestion du registre par formulaire → fichier (aucune base de données).</p>
+
+  <div class="callout">
+    <h3>Comment ça marche</h3>
+    <ol>
+      <li>Remplissez un formulaire ci-dessous (nouvelle sous-famille, nouveau membre, ou nouvelle photo).</li>
+      <li>Chaque ajout met à jour l'aperçu du registre, chargé en mémoire dans cette page.</li>
+      <li>Cliquez sur <b>« Télécharger family-data.json »</b> pour obtenir le fichier mis à jour.</li>
+      <li>Remplacez le fichier <code>family-data.json</code> existant sur l'hébergement du site (gestionnaire de fichiers, FTP, ou dépôt GitHub selon votre hébergeur). Le site public se met à jour automatiquement, sans autre modification.</li>
+    </ol>
+    <p style="margin:10px 0 0;">🔗 <b>Liens automatiques :</b> chaque lien saisi génère aussi son réciproque — indiquez que A est l'époux de B, et B devient automatiquement l'épouse (ou l'époux) de A ; indiquez que A est le père de B, et B devient automatiquement fils/fille de A ; idem pour oncle/tante ↔ neveu/nièce. De plus, un lien frère/sœur se propage par transitivité (A frère de B, B frère de C → A frère de C), et un lien cousin(e)/oncle-tante/neveu-nièce s'étend automatiquement à toute la fratrie. Pour que le bon mot soit choisi (cousin/cousine, fils/fille…), indiquez le <b>sexe</b> de chaque membre.</p>
+  </div>
+
+  <div class="status-bar">
+    <div class="counts">Registre chargé : <b id="famCount">0</b> sous-famille(s), <b id="memberCount">0</b> membre(s), <b id="photoCount">0</b> photo(s) d'événement.</div>
+    <div class="file-actions">
+      <button class="btn ghost" onclick="document.getElementById('jsonUpload').click()">Charger un autre fichier</button>
+      <input type="file" id="jsonUpload" class="hidden-file" accept="application/json">
+      <button class="btn primary" id="downloadBtn">⬇ Télécharger family-data.json</button>
+    </div>
+  </div>
+
+  <!-- ===== Paramètres généraux ===== -->
+  <section class="panel">
+    <h2>Paramètres généraux</h2>
+    <p class="hint">Le nom affiché dans l'en-tête du site et les statistiques de la page d'accueil.</p>
+    <div class="field-row">
+      <div class="field"><label>Nom de la famille</label><input id="set-name" placeholder="ex. Famille Étoile-des-Îles"></div>
+      <div class="field"><label>Début de l'immigration (année)</label><input id="set-founded" type="number" placeholder="ex. 2000"></div>
+    </div>
+  </section>
+
+  <!-- ===== Nouvelle sous-famille ===== -->
+  <section class="panel">
+    <h2>Ajouter une sous-famille</h2>
+    <p class="hint">Crée une nouvelle branche vide ; ajoutez-y ensuite les parents comme premiers membres ci-dessous.</p>
+    <div class="field-row">
+      <div class="field"><label>Nom de la sous-famille</label><input id="nf-name" placeholder="ex. Famille Alexis"></div>
+      <div class="field"><label>Ville</label><input id="nf-city" placeholder="ex. Sherbrooke"></div>
+      <div class="field"><label>Depuis (année)</label><input id="nf-since" type="number" placeholder="ex. 2011"></div>
+      <div class="field"><label>Couleur d'identification</label><input id="nf-color" type="color" value="#5C2A54"></div>
+    </div>
+    <button class="btn teal" id="addFamilyBtn">+ Ajouter la sous-famille</button>
+  </section>
+
+  <!-- ===== Nouveau membre ===== -->
+  <section class="panel">
+    <h2>Ajouter un membre</h2>
+    <p class="hint">Choisissez sa sous-famille, ses informations, puis liez-le aux autres membres si applicable.</p>
+    <div class="field-row">
+      <div class="field"><label>Sous-famille</label><select id="nm-family"></select></div>
+      <div class="field"><label>Prénom et nom</label><input id="nm-name" placeholder="ex. Steven Pierre"></div>
+      <div class="field"><label>Sexe <span style="font-weight:400;color:#8b9186;">(pour les liens auto.)</span></label>
+        <select id="nm-sexe"><option value="">Non précisé</option><option value="M">Homme</option><option value="F">Femme</option></select>
+      </div>
+      <div class="field"><label>Jour de naissance</label><input id="nm-day" type="number" min="1" max="31" placeholder="ex. 14"></div>
+      <div class="field"><label>Mois de naissance</label>
+        <select id="nm-month">
+          <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+          <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+          <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+          <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+        </select>
+      </div>
+    </div>
+    <div class="field full" style="margin-bottom:14px;">
+      <label>Photo (facultatif)</label>
+      <div class="photo-input-row">
+        <div class="photo-preview" id="nm-photo-preview"></div>
+        <input type="file" id="nm-photo-file" accept="image/*">
+      </div>
+    </div>
+
+    <div class="field full" style="margin-bottom:8px;"><label>Liens avec d'autres membres</label></div>
+    <p class="hint" style="margin-top:-2px;">Les liens frère/sœur, cousin(e), oncle/tante et neveu/nièce se propagent ensuite automatiquement aux autres frères et sœurs — inutile de tout ressaisir pour chacun.</p>
+    <div class="rel-builder">
+      <div class="field"><select id="nm-rel-type">
+        <option>Époux de</option><option>Épouse de</option><option>Père de</option><option>Mère de</option>
+        <option>Fils de</option><option>Fille de</option><option>Frère de</option><option>Sœur de</option>
+        <option>Oncle de</option><option>Tante de</option><option>Cousin de</option><option>Cousine de</option>
+        <option>Petit-cousin de</option><option>Petite-cousine de</option>
+        <option>Neveu de</option><option>Nièce de</option>
+        <option>Beau-frère de</option><option>Belle-sœur de</option>
+      </select></div>
+      <div class="field"><select id="nm-rel-target"></select></div>
+      <button class="btn ghost" id="addRelBtn" type="button">+ Ajouter ce lien</button>
+    </div>
+    <div class="rel-chips" id="relChips"></div>
+
+    <button class="btn teal" id="addMemberBtn">+ Ajouter le membre</button>
+  </section>
+
+  <!-- ===== Nouvelle photo ===== -->
+  <section class="panel">
+    <h2>Ajouter une photo d'événement</h2>
+    <div class="field-row">
+      <div class="field"><label>Portée</label>
+        <select id="np-scope"><option value="__family__">Toute la famille (page d'accueil)</option></select>
+      </div>
+      <div class="field"><label>Légende</label><input id="np-caption" placeholder="ex. Réunion annuelle 2026"></div>
+    </div>
+    <div class="photo-input-row">
+      <div class="photo-preview" id="np-photo-preview"></div>
+      <input type="file" id="np-photo-file" accept="image/*">
+    </div>
+    <button class="btn teal" id="addPhotoBtn">+ Ajouter la photo</button>
+  </section>
+
+  <!-- ===== Aperçu / suppression ===== -->
+  <section class="panel">
+    <h2>Aperçu du registre actuel</h2>
+    <p class="hint">Retirez un membre ou une sous-famille directement ici avant de télécharger le fichier.</p>
+    <div id="previewArea"></div>
+  </section>
+
+  <a class="back" href="index.html">← Retour au site public</a>
+</div>
+
+<!-- ===== Modale : modifier une sous-famille ===== -->
+<div class="modal-bg" id="editFamilyBg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEditFamily()">✕</button>
+    <h3>Modifier la sous-famille</h3>
+    <div class="field-row">
+      <div class="field"><label>Nom de la sous-famille</label><input id="ef-name"></div>
+      <div class="field"><label>Ville</label><input id="ef-city"></div>
+      <div class="field"><label>Depuis (année)</label><input id="ef-since" type="number"></div>
+      <div class="field"><label>Couleur d'identification</label><input id="ef-color" type="color"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn ghost" onclick="closeEditFamily()">Annuler</button>
+      <button class="btn teal" id="saveFamilyBtn">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Modale : modifier un membre ===== -->
+<div class="modal-bg" id="editMemberBg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeEditMember()">✕</button>
+    <h3>Modifier le membre</h3>
+    <div class="field-row">
+      <div class="field full"><label>Prénom et nom</label><input id="em-name"></div>
+      <div class="field"><label>Sexe <span style="font-weight:400;color:#8b9186;">(pour les liens auto.)</span></label>
+        <select id="em-sexe"><option value="">Non précisé</option><option value="M">Homme</option><option value="F">Femme</option></select>
+      </div>
+      <div class="field"><label>Jour de naissance</label><input id="em-day" type="number" min="1" max="31"></div>
+      <div class="field"><label>Mois de naissance</label>
+        <select id="em-month">
+          <option value="1">Janvier</option><option value="2">Février</option><option value="3">Mars</option>
+          <option value="4">Avril</option><option value="5">Mai</option><option value="6">Juin</option>
+          <option value="7">Juillet</option><option value="8">Août</option><option value="9">Septembre</option>
+          <option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option>
+        </select>
+      </div>
+    </div>
+    <div class="field full" style="margin-bottom:14px;">
+      <label>Photo</label>
+      <div class="photo-input-row">
+        <div class="photo-preview" id="em-photo-preview"></div>
+        <input type="file" id="em-photo-file" accept="image/*">
+        <button class="btn ghost" type="button" id="em-photo-clear">Retirer la photo</button>
+      </div>
+    </div>
+    <div class="field full" style="margin-bottom:8px;"><label>Liens avec d'autres membres (saisis manuellement)</label></div>
+    <p class="hint" style="margin-top:-2px;">Les liens fraternels et leur propagation aux cousin(e)s, oncles/tantes et neveux/nièces sont recalculés automatiquement et n'apparaissent pas ici.</p>
+    <div class="rel-builder">
+      <div class="field"><select id="em-rel-type">
+        <option>Époux de</option><option>Épouse de</option><option>Père de</option><option>Mère de</option>
+        <option>Fils de</option><option>Fille de</option><option>Frère de</option><option>Sœur de</option>
+        <option>Oncle de</option><option>Tante de</option><option>Cousin de</option><option>Cousine de</option>
+        <option>Petit-cousin de</option><option>Petite-cousine de</option>
+        <option>Neveu de</option><option>Nièce de</option>
+        <option>Beau-frère de</option><option>Belle-sœur de</option>
+      </select></div>
+      <div class="field"><select id="em-rel-target"></select></div>
+      <button class="btn ghost" id="em-addRelBtn" type="button">+ Ajouter ce lien</button>
+    </div>
+    <div class="rel-chips" id="emRelChips"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn ghost" onclick="closeEditMember()">Annuler</button>
+      <button class="btn teal" id="saveMemberBtn">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let DATA = { familyName:"Famille Étoile-des-Îles", founded:2000, familyEvents:[], subfamilies:[] };
+let nmPhotoData = "", npPhotoData = "";
+const pendingRelations = [];
+
+// Repli utilisé UNIQUEMENT si family-data.json est introuvable ou illisible (ex. page ouverte
+// directement, sans hébergement, ou premier lancement avant tout fichier). Volontairement
+// vide, pour ne jamais afficher de fausses données qui ne correspondent pas au vrai fichier.
+const DEFAULT_DATA = { "familyName": "Ma famille", "founded": new Date().getFullYear(), "familyEvents": [], "subfamilies": [] };
+
+function slugify(s){ return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,""); }
+function uid(prefix){ return prefix+"-"+Math.random().toString(36).slice(2,8); }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2200); }
+
+// ---------- Déduction automatique des liens ----------
+// Types de liens dont le libellé dépend du sexe du SUJET (la personne qui porte le lien),
+// et le type "inverse" correspondant vu depuis l'autre personne.
+const GENDERED_TYPES = {
+  SPOUSE:      { M:"Époux de", F:"Épouse de" },
+  PARENT:      { M:"Père de", F:"Mère de" },
+  CHILD:       { M:"Fils de", F:"Fille de" },
+  SIBLING:     { M:"Frère de", F:"Sœur de" },
+  BELLE_FAMILLE:{ M:"Beau-frère de", F:"Belle-sœur de" },
+  COUSIN:      { M:"Cousin de", F:"Cousine de" },
+  PETIT_COUSIN:{ M:"Petit-cousin de", F:"Petite-cousine de" },
+  UNCLE_AUNT:  { M:"Oncle de", F:"Tante de" },
+  NIECE_NEPHEW:{ M:"Neveu de", F:"Nièce de" }
+};
+const INVERSE_KIND = {
+  SPOUSE:'SPOUSE', PARENT:'CHILD', CHILD:'PARENT', SIBLING:'SIBLING', BELLE_FAMILLE:'BELLE_FAMILLE',
+  COUSIN:'COUSIN', PETIT_COUSIN:'PETIT_COUSIN', UNCLE_AUNT:'NIECE_NEPHEW', NIECE_NEPHEW:'UNCLE_AUNT'
+};
+const TYPE_TO_KIND = {};
+Object.entries(GENDERED_TYPES).forEach(([kind, labels])=>{
+  TYPE_TO_KIND[labels.M] = { kind, sexe:'M' };
+  TYPE_TO_KIND[labels.F] = { kind, sexe:'F' };
+});
+
+function allMembersFlat(){
+  const arr = [];
+  DATA.subfamilies.forEach(f=> f.members.forEach(m=> arr.push(m)));
+  return arr;
+}
+function findMemberById(id){
+  for(const f of DATA.subfamilies) for(const m of f.members) if(m.id===id) return m;
+  return null;
+}
+function memberSexe(m){
+  if(m.sexe === 'M' || m.sexe === 'F') return m.sexe;
+  // repli : déduit du premier lien sexué existant où cette personne est le sujet
+  for(const r of (m.relations||[])){
+    if(TYPE_TO_KIND[r.type]) return TYPE_TO_KIND[r.type].sexe;
+  }
+  return null;
+}
+
+// Recalcule tous les liens "auto" à partir des liens saisis manuellement :
+// 1) ajoute le réciproque de chaque lien (époux/épouse, père/mère ↔ fils/fille, oncle/tante ↔ neveu/nièce, etc.)
+// 2) complète chaque groupe de frères et sœurs (transitivité)
+// 3) propage cousin(e), oncle/tante, neveu/nièce à l'ensemble de la fratrie (dans les deux sens)
+function runInference(){
+  const members = allMembersFlat();
+  // repart des liens manuels uniquement (retire les anciens liens "auto")
+  members.forEach(m=>{ m.relations = (m.relations||[]).filter(r=>!r.auto); });
+
+  function hasRelationTo(subj, targetId){ return subj.relations.some(r=> r.target === targetId); }
+  function addAuto(subjId, targetId, kind){
+    if(subjId === targetId) return;
+    const subj = findMemberById(subjId);
+    if(!subj || hasRelationTo(subj, targetId)) return;
+    const sexe = memberSexe(subj);
+    if(!sexe) return; // sexe inconnu : impossible de choisir le bon libellé, on n'ajoute rien
+    subj.relations.push({ type: GENDERED_TYPES[kind][sexe], target: targetId, auto:true });
+  }
+  function addBothWays(aId, bId, kind){
+    addAuto(aId, bId, kind);
+    addAuto(bId, aId, INVERSE_KIND[kind]);
+  }
+
+  // 1) réciproque de chaque lien saisi manuellement (A époux de B → B épouse de A, etc.)
+  members.forEach(m=>{
+    m.relations.slice().forEach(r=>{
+      const info = TYPE_TO_KIND[r.type];
+      if(info) addAuto(r.target, m.id, INVERSE_KIND[info.kind]);
+    });
+  });
+
+  // union-find pour regrouper les fratries, à partir des liens fraternels (manuels + réciproques)
+  const parent = {};
+  members.forEach(m=> parent[m.id] = m.id);
+  function find(x){ while(parent[x] !== x) x = parent[x]; return x; }
+  function union(a,b){ const ra=find(a), rb=find(b); if(ra!==rb) parent[ra]=rb; }
+  members.forEach(m=> m.relations.forEach(r=>{ const info = TYPE_TO_KIND[r.type]; if(info && info.kind === 'SIBLING') union(m.id, r.target); }));
+
+  const cliques = {};
+  members.forEach(m=>{ const root = find(m.id); (cliques[root] = cliques[root] || []).push(m.id); });
+
+  // 2) fratrie : maille complète au sein de chaque groupe
+  Object.values(cliques).forEach(ids=>{
+    if(ids.length < 2) return;
+    ids.forEach(a=> ids.forEach(b=>{ if(a!==b) addBothWays(a,b,'SIBLING'); }));
+  });
+
+  // 3) propagation cousin(e) / oncle-tante / neveu-nièce aux frères et sœurs, avec réciproque
+  const snapshot = members.map(m=> ({ id:m.id, relations: m.relations.slice() }));
+  snapshot.forEach(({id:subjId, relations})=>{
+    relations.forEach(r=>{
+      const info = TYPE_TO_KIND[r.type];
+      if(!info || !['COUSIN','PETIT_COUSIN','UNCLE_AUNT','NIECE_NEPHEW'].includes(info.kind)) return;
+      const clique = cliques[find(subjId)] || [subjId];
+      clique.forEach(otherId=>{ if(otherId !== subjId) addBothWays(otherId, r.target, info.kind); });
+    });
+  });
+}
+
+async function loadInitial(){
+  try{
+    const res = await fetch('family-data.json', {cache:"no-store"});
+    if(!res.ok) throw new Error("fetch failed");
+    DATA = await res.json();
+  }catch(e){
+    DATA = DEFAULT_DATA;
+    toast("Aucun family-data.json trouvé à côté de cette page — registre vide affiché. Chargez votre fichier avec « Charger un autre fichier » si vous en avez déjà un.");
+  }
+  refreshAll();
+}
+
+document.getElementById('jsonUpload').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{ DATA = JSON.parse(reader.result); refreshAll(); toast("Fichier chargé."); }
+    catch(err){ alert("Fichier JSON invalide."); }
+  };
+  reader.readAsText(file);
+});
+
+function refreshAll(){
+  DATA.subfamilies = DATA.subfamilies || [];
+  DATA.familyEvents = DATA.familyEvents || [];
+  runInference();
+  document.getElementById('set-name').value = DATA.familyName || "";
+  document.getElementById('set-founded').value = DATA.founded || "";
+  document.getElementById('famCount').textContent = DATA.subfamilies.length;
+  document.getElementById('memberCount').textContent = DATA.subfamilies.reduce((s,f)=>s+f.members.length,0);
+  document.getElementById('photoCount').textContent = DATA.familyEvents.length;
+  populateFamilySelect();
+  populateTargetSelect();
+  populateScopeSelect();
+  renderPreview();
+}
+
+function populateFamilySelect(){
+  const sel = document.getElementById('nm-family');
+  sel.innerHTML = DATA.subfamilies.map(f=>`<option value="${f.id}">${f.name}</option>`).join("") || `<option disabled selected>Ajoutez d'abord une sous-famille</option>`;
+}
+function populateScopeSelect(){
+  const sel = document.getElementById('np-scope');
+  sel.innerHTML = `<option value="__family__">Toute la famille (page d'accueil)</option>` +
+    DATA.subfamilies.map(f=>`<option value="${f.id}">${f.name}</option>`).join("");
+}
+function populateTargetSelect(){
+  const sel = document.getElementById('nm-rel-target');
+  const opts = [];
+  DATA.subfamilies.forEach(f=> f.members.forEach(m=> opts.push(`<option value="${m.id}">${m.name} (${f.name})</option>`)));
+  sel.innerHTML = opts.join("") || `<option disabled>Aucun membre existant</option>`;
+}
+
+// ---- photo helpers ----
+function wireFileInput(inputId, previewId, setter){
+  document.getElementById(inputId).addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      setter(reader.result);
+      document.getElementById(previewId).style.backgroundImage = `url('${reader.result}')`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+wireFileInput('nm-photo-file','nm-photo-preview', v=>nmPhotoData=v);
+wireFileInput('np-photo-file','np-photo-preview', v=>npPhotoData=v);
+
+// ---- Paramètres généraux ----
+document.getElementById('set-name').addEventListener('input', (e)=>{ DATA.familyName = e.target.value; });
+document.getElementById('set-founded').addEventListener('input', (e)=>{ DATA.founded = parseInt(e.target.value) || DATA.founded; });
+
+// ---- Ajouter sous-famille ----
+document.getElementById('addFamilyBtn').addEventListener('click', ()=>{
+  const name = document.getElementById('nf-name').value.trim();
+  if(!name){ alert("Le nom de la sous-famille est requis."); return; }
+  const id = slugify(name) || uid('fam');
+  DATA.subfamilies.push({
+    id, name,
+    city: document.getElementById('nf-city').value.trim() || "—",
+    since: parseInt(document.getElementById('nf-since').value) || new Date().getFullYear(),
+    color: document.getElementById('nf-color').value,
+    members: [], photos: []
+  });
+  document.getElementById('nf-name').value = "";
+  document.getElementById('nf-city').value = "";
+  document.getElementById('nf-since').value = "";
+  refreshAll();
+  toast("Sous-famille ajoutée : "+name);
+});
+
+// ---- Relations (formulaire membre) ----
+document.getElementById('addRelBtn').addEventListener('click', ()=>{
+  const type = document.getElementById('nm-rel-type').value;
+  const targetSel = document.getElementById('nm-rel-target');
+  const targetId = targetSel.value;
+  if(!targetId){ return; }
+  pendingRelations.push({type, target: targetId, label: targetSel.options[targetSel.selectedIndex].text});
+  renderRelChips();
+});
+function renderRelChips(){
+  document.getElementById('relChips').innerHTML = pendingRelations.map((r,i)=>
+    `<span class="rel-chip">${r.type} ${r.label}<button type="button" onclick="removeRel(${i})">✕</button></span>`).join("");
+}
+function removeRel(i){ pendingRelations.splice(i,1); renderRelChips(); }
+
+// ---- Ajouter membre ----
+document.getElementById('addMemberBtn').addEventListener('click', ()=>{
+  const famId = document.getElementById('nm-family').value;
+  const fam = DATA.subfamilies.find(f=>f.id===famId);
+  const name = document.getElementById('nm-name').value.trim();
+  const day = parseInt(document.getElementById('nm-day').value);
+  const month = parseInt(document.getElementById('nm-month').value);
+  if(!fam){ alert("Ajoutez d'abord une sous-famille."); return; }
+  if(!name || !day){ alert("Le nom et le jour de naissance sont requis."); return; }
+  fam.members.push({
+    id: uid('m'), name, day, month, photo: nmPhotoData,
+    sexe: document.getElementById('nm-sexe').value || null,
+    relations: pendingRelations.map(r=>({type:r.type, target:r.target}))
+  });
+  document.getElementById('nm-sexe').value = "";
+  document.getElementById('nm-name').value = "";
+  document.getElementById('nm-day').value = "";
+  document.getElementById('nm-photo-file').value = "";
+  document.getElementById('nm-photo-preview').style.backgroundImage = "";
+  nmPhotoData = "";
+  pendingRelations.length = 0;
+  renderRelChips();
+  refreshAll();
+  toast("Membre ajouté : "+name);
+});
+
+// ---- Ajouter photo ----
+document.getElementById('addPhotoBtn').addEventListener('click', ()=>{
+  const scope = document.getElementById('np-scope').value;
+  const caption = document.getElementById('np-caption').value.trim() || "Événement de famille";
+  if(!npPhotoData){ alert("Choisissez une image."); return; }
+  const entry = { url: npPhotoData, caption, color:"linear-gradient(135deg,#F0A63B,#E5563F)" };
+  if(scope === "__family__"){ DATA.familyEvents.push({...entry, date:""}); }
+  else { DATA.subfamilies.find(f=>f.id===scope).photos.push(entry); }
+  document.getElementById('np-caption').value = "";
+  document.getElementById('np-photo-file').value = "";
+  document.getElementById('np-photo-preview').style.backgroundImage = "";
+  npPhotoData = "";
+  refreshAll();
+  toast("Photo ajoutée.");
+});
+
+// ---- Aperçu + suppression ----
+function renderPreview(){
+  const area = document.getElementById('previewArea');
+  if(!DATA.subfamilies.length){ area.innerHTML = `<p style="color:#8b9186;font-style:italic;">Aucune sous-famille pour l'instant.</p>`; return; }
+  area.innerHTML = DATA.subfamilies.map(fam=>`
+    <div class="fam-block">
+      <div class="fam-block-head">
+        <h4>${fam.name} <span style="font-weight:400;color:#8b9186;font-size:.82rem;">— ${fam.members.length} membre(s)</span></h4>
+        <div class="fam-block-actions">
+          <button class="edit-btn" onclick="openEditFamily('${fam.id}')">Modifier</button>
+          <button class="del-btn" onclick="deleteFamily('${fam.id}')">Retirer la sous-famille</button>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Nom</th><th>Naissance</th><th>Liens</th><th></th></tr></thead>
+        <tbody>
+          ${fam.members.map(m=>{
+            const manual = m.relations.filter(r=>!r.auto).length;
+            const auto = m.relations.filter(r=>r.auto).length;
+            return `<tr><td>${m.name}</td><td>${m.day}/${m.month}</td><td>${manual}${auto?` <span style="color:#8b9186;">+${auto} auto</span>`:''}</td><td><button class="edit-btn" onclick="openEditMember('${fam.id}','${m.id}')">Modifier</button><button class="del-btn" onclick="deleteMember('${fam.id}','${m.id}')">Retirer</button></td></tr>`;
+          }).join("") || `<tr><td colspan="4" style="color:#8b9186;font-style:italic;">Aucun membre</td></tr>`}
+        </tbody>
+      </table>
+    </div>`).join("");
+}
+function deleteFamily(id){
+  if(!confirm("Retirer cette sous-famille et tous ses membres ?")) return;
+  DATA.subfamilies = DATA.subfamilies.filter(f=>f.id!==id);
+  refreshAll();
+}
+function deleteMember(famId, memberId){
+  const fam = DATA.subfamilies.find(f=>f.id===famId);
+  fam.members = fam.members.filter(m=>m.id!==memberId);
+  refreshAll();
+}
+
+// ---- Modifier une sous-famille ----
+let editingFamilyId = null;
+function openEditFamily(famId){
+  const fam = DATA.subfamilies.find(f=>f.id===famId);
+  if(!fam) return;
+  editingFamilyId = famId;
+  document.getElementById('ef-name').value = fam.name;
+  document.getElementById('ef-city').value = fam.city;
+  document.getElementById('ef-since').value = fam.since;
+  document.getElementById('ef-color').value = fam.color;
+  document.getElementById('editFamilyBg').classList.add('show');
+}
+function closeEditFamily(){ document.getElementById('editFamilyBg').classList.remove('show'); editingFamilyId = null; }
+document.getElementById('saveFamilyBtn').addEventListener('click', ()=>{
+  const fam = DATA.subfamilies.find(f=>f.id===editingFamilyId);
+  if(!fam) return;
+  const name = document.getElementById('ef-name').value.trim();
+  if(!name){ alert("Le nom de la sous-famille est requis."); return; }
+  fam.name = name;
+  fam.city = document.getElementById('ef-city').value.trim() || "—";
+  fam.since = parseInt(document.getElementById('ef-since').value) || fam.since;
+  fam.color = document.getElementById('ef-color').value;
+  closeEditFamily();
+  refreshAll();
+  toast("Sous-famille mise à jour : "+name);
+});
+
+// ---- Modifier un membre ----
+let editingMemberCtx = null; // {famId, memberId}
+let emPhotoData = "";
+const editPendingRelations = [];
+
+function populateEditTargetSelect(excludeId){
+  const sel = document.getElementById('em-rel-target');
+  const opts = [];
+  DATA.subfamilies.forEach(f=> f.members.forEach(m=>{
+    if(m.id === excludeId) return;
+    opts.push(`<option value="${m.id}">${m.name} (${f.name})</option>`);
+  }));
+  sel.innerHTML = opts.join("") || `<option disabled>Aucun autre membre</option>`;
+}
+
+function openEditMember(famId, memberId){
+  const fam = DATA.subfamilies.find(f=>f.id===famId);
+  const m = fam && fam.members.find(x=>x.id===memberId);
+  if(!m) return;
+  editingMemberCtx = {famId, memberId};
+  document.getElementById('em-name').value = m.name;
+  document.getElementById('em-sexe').value = m.sexe || "";
+  document.getElementById('em-day').value = m.day;
+  document.getElementById('em-month').value = m.month;
+  emPhotoData = m.photo || "";
+  document.getElementById('em-photo-preview').style.backgroundImage = emPhotoData ? `url('${emPhotoData}')` : "";
+  document.getElementById('em-photo-file').value = "";
+  populateEditTargetSelect(memberId);
+  editPendingRelations.length = 0;
+  m.relations.filter(r=>!r.auto).forEach(r=>{
+    const t = DATA.subfamilies.flatMap(f=>f.members).find(x=>x.id===r.target);
+    editPendingRelations.push({type:r.type, target:r.target, label: t ? t.name : "?"});
+  });
+  renderEditRelChips();
+  document.getElementById('editMemberBg').classList.add('show');
+}
+function closeEditMember(){ document.getElementById('editMemberBg').classList.remove('show'); editingMemberCtx = null; }
+
+document.getElementById('em-photo-file').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{ emPhotoData = reader.result; document.getElementById('em-photo-preview').style.backgroundImage = `url('${emPhotoData}')`; };
+  reader.readAsDataURL(file);
+});
+document.getElementById('em-photo-clear').addEventListener('click', ()=>{
+  emPhotoData = ""; document.getElementById('em-photo-preview').style.backgroundImage = ""; document.getElementById('em-photo-file').value = "";
+});
+
+document.getElementById('em-addRelBtn').addEventListener('click', ()=>{
+  const type = document.getElementById('em-rel-type').value;
+  const targetSel = document.getElementById('em-rel-target');
+  const targetId = targetSel.value;
+  if(!targetId) return;
+  editPendingRelations.push({type, target: targetId, label: targetSel.options[targetSel.selectedIndex].text});
+  renderEditRelChips();
+});
+function renderEditRelChips(){
+  document.getElementById('emRelChips').innerHTML = editPendingRelations.map((r,i)=>
+    `<span class="rel-chip">${r.type} ${r.label}<button type="button" onclick="removeEditRel(${i})">✕</button></span>`).join("") || `<span style="color:#8b9186;font-style:italic;font-size:.85rem;">Aucun lien</span>`;
+}
+function removeEditRel(i){ editPendingRelations.splice(i,1); renderEditRelChips(); }
+
+document.getElementById('saveMemberBtn').addEventListener('click', ()=>{
+  if(!editingMemberCtx) return;
+  const fam = DATA.subfamilies.find(f=>f.id===editingMemberCtx.famId);
+  const m = fam && fam.members.find(x=>x.id===editingMemberCtx.memberId);
+  if(!m) return;
+  const name = document.getElementById('em-name').value.trim();
+  const day = parseInt(document.getElementById('em-day').value);
+  if(!name || !day){ alert("Le nom et le jour de naissance sont requis."); return; }
+  m.name = name;
+  m.sexe = document.getElementById('em-sexe').value || null;
+  m.day = day;
+  m.month = parseInt(document.getElementById('em-month').value);
+  m.photo = emPhotoData;
+  m.relations = editPendingRelations.map(r=>({type:r.type, target:r.target}));
+  closeEditMember();
+  refreshAll();
+  toast("Membre mis à jour : "+name);
+});
+
+// ---- Téléchargement ----
+document.getElementById('downloadBtn').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:"application/json"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "family-data.json";
+  a.click();
+  toast("Fichier téléchargé — à remplacer sur l'hébergement.");
+});
+
+loadInitial();
+</script>
+</body>
+</html>

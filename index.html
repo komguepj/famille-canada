@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notre Famille au Canada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF6EC; --paper:#FFFDF9; --ink:#242B25;
+    --marigold:#F0A63B; --marigold-deep:#D88A1F;
+    --teal:#0F6B62; --teal-deep:#0A4C46;
+    --coral:#E5563F; --plum:#5C2A54;
+    --name-blue:#2C6E9B; --bday-green:#2F8F5B;
+    --line: rgba(36,43,37,0.12);
+    --radius-card: 22px; --radius-pill: 999px;
+    --shadow-soft: 0 10px 24px rgba(216,138,31,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} *{animation:none !important; transition:none !important;} }
+  body{margin:0;background:var(--cream);color:var(--ink);font-family:'Karla',sans-serif;font-size:16px;line-height:1.55;}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;margin:0 0 .4em;letter-spacing:-0.01em;}
+  p{margin:0 0 1em;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  img{max-width:100%;display:block;}
+
+  /* ---------- NAV ---------- */
+  header.topbar{position:sticky;top:0;z-index:60;background:var(--cream);border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:16px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem;color:var(--teal-deep);}
+  .brand .mark{width:34px;height:34px;border-radius:50%;background:conic-gradient(from 200deg, var(--marigold), var(--coral), var(--teal), var(--marigold));flex:none;}
+  nav.tabs{display:flex;gap:4px;flex-wrap:wrap;}
+  nav.tabs button{border:none;background:transparent;padding:9px 16px;border-radius:var(--radius-pill);font-weight:600;font-size:0.92rem;color:var(--ink);opacity:.62;transition:opacity .15s, background .15s;}
+  nav.tabs button:hover{opacity:1;}
+  nav.tabs button.active{opacity:1;background:var(--paper);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .admin-toggle{display:flex;align-items:center;gap:8px;font-size:.85rem;font-weight:600;color:var(--teal-deep);border:1.5px solid var(--teal);border-radius:var(--radius-pill);padding:7px 14px;background:var(--paper);white-space:nowrap;}
+  .admin-toggle.on{background:var(--teal);color:#fff;}
+  .hamburger{display:none;border:none;background:var(--paper);width:42px;height:42px;border-radius:12px;align-items:center;justify-content:center;font-size:1.3rem;flex:none;}
+  @media (max-width:900px){
+    nav.tabs{display:none;position:fixed;inset:0;top:64px;background:var(--cream);flex-direction:column;padding:18px;gap:8px;z-index:55;}
+    nav.tabs.open{display:flex;}
+    nav.tabs button{text-align:left;font-size:1.05rem;padding:14px 16px;}
+    .hamburger{display:flex;}
+  }
+
+  main{max-width:1180px;margin:0 auto;padding:0 24px 100px;}
+  .page{display:none;animation:fade .35s ease;}
+  .page.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* ---------- HERO ---------- */
+  .hero{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;padding:56px 0 48px;}
+  .hero h1{font-size:clamp(2.1rem,4vw,3.2rem);line-height:1.06;color:var(--teal-deep);}
+  .hero .lede{font-size:1.08rem;max-width:46ch;color:#3c4438;}
+  .motto{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:1.05rem;color:var(--teal-deep);max-width:44ch;margin:2px 0 20px;padding-left:14px;border-left:3px solid var(--marigold);}
+  .hero .stats{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap;}
+  .stat b{display:block;font-family:'Fraunces',serif;font-size:1.8rem;color:var(--coral);}
+  .stat span{font-size:.84rem;color:#5c6459;}
+  .sun-cluster{position:relative;width:100%;aspect-ratio:1/1;max-width:400px;margin:0 auto;}
+  .sun-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;aspect-ratio:1/1;border-radius:50%;background:radial-gradient(circle at 35% 30%, var(--marigold), var(--marigold-deep));display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fraunces',serif;font-weight:700;text-align:center;font-size:.9rem;box-shadow:var(--shadow-soft);padding:8px;}
+  .sat{position:absolute;width:18%;aspect-ratio:1/1;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.74rem;box-shadow:0 6px 14px rgba(0,0,0,.1);overflow:hidden;background-size:cover;background-position:center;}
+  @media (max-width:820px){ .hero{grid-template-columns:1fr;padding-top:28px;} }
+
+  .section-head{margin:58px 0 22px;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .section-head h2{font-size:1.6rem;color:var(--teal-deep);}
+  .section-head p{margin:0;color:#5c6459;font-size:.95rem;max-width:50ch;}
+  .see-all{font-weight:700;font-size:.85rem;color:var(--teal-deep);border-bottom:2px solid var(--marigold);padding-bottom:1px;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;}
+
+  /* ---------- SOUS-FAMILLES CARDS ---------- */
+  .family-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px;}
+  .family-card{background:var(--paper);border-radius:var(--radius-card);padding:22px 22px 20px;border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;transition:transform .15s, box-shadow .15s;text-align:left;}
+  .family-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-soft);}
+  .family-card .duo{display:flex;}
+  .avatar{width:52px;height:52px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;border:3px solid var(--paper);background-size:cover;background-position:center;}
+  .duo .avatar:nth-child(2){margin-left:-16px;}
+  .family-card h3{font-size:1.15rem;color:var(--ink);}
+  .family-card .parents{font-size:.87rem;color:#5c6459;}
+  .family-card .go{margin-top:auto;align-self:flex-start;font-weight:700;font-size:.85rem;color:var(--teal-deep);border-bottom:2px solid var(--marigold);padding-bottom:1px;}
+  .empty-note{color:#8b9186;font-style:italic;font-size:.9rem;}
+
+  .toolbar-search{display:flex;align-items:center;gap:10px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-pill);padding:12px 18px;margin-bottom:22px;max-width:420px;}
+  .toolbar-search input{flex:1;border:none;background:transparent;font-family:inherit;font-size:.96rem;outline:none;}
+
+  /* ---------- ANNUAIRE ---------- */
+  .directory{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:6px 8px;}
+  .directory-search{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);}
+  .directory-search input{flex:1;border:none;background:transparent;font-family:inherit;font-size:1rem;outline:none;}
+  .directory-list{max-height:420px;overflow-y:auto;}
+  .dir-row{display:flex;align-items:center;gap:14px;padding:11px 16px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);}
+  .dir-row:last-child{border-bottom:none;}
+  .dir-row:hover{background:#FDF1DC;}
+  .dir-row .avatar{width:36px;height:36px;font-size:.7rem;border-width:2px;}
+  .dir-row .who{flex:1;}
+  .dir-row .who b{display:block;font-size:.96rem;}
+  .dir-row .who small{color:#5c6459;font-size:.8rem;}
+  .dir-row .arrow{color:var(--coral);font-weight:700;}
+
+  /* ---------- GALERIE ---------- */
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+  .photo-tile{aspect-ratio:4/3;border-radius:16px;display:flex;align-items:flex-end;padding:12px;color:#fff;font-weight:700;font-size:.85rem;background-size:cover;background-position:center;position:relative;overflow:hidden;}
+  .photo-tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top, rgba(0,0,0,.55), transparent 55%);}
+  .photo-tile span{position:relative;z-index:1;}
+  .photo-tile small{position:relative;z-index:1;display:block;font-weight:500;opacity:.85;}
+  .add-photo-tile{aspect-ratio:4/3;border-radius:16px;border:2px dashed var(--teal);display:none;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--teal-deep);font-weight:700;font-size:.85rem;background:#F2FBF9;text-align:center;}
+  .admin-on .add-photo-tile{display:flex;}
+
+  /* ---------- CALENDRIER ---------- */
+  .cal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;}
+  .cal-month{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px;}
+  .cal-month h4{color:var(--coral);font-size:1.05rem;}
+  .cal-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer;}
+  .cal-item:last-child{border:none;}
+  .cal-date{width:40px;height:40px;border-radius:10px;background:var(--marigold);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex:none;}
+  .cal-item .who b{display:block;font-size:.92rem;}
+  .cal-item .who small{color:#5c6459;font-size:.78rem;}
+  .cal-empty{color:#8b9186;font-size:.85rem;font-style:italic;padding:8px 0;}
+
+  /* ---------- SOUS-FAMILLE PAGE ---------- */
+  .fam-hero{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:32px 0 10px;border-bottom:1px solid var(--line);margin-bottom:32px;}
+  .fam-hero .duo{display:flex;}
+  .fam-hero .avatar{width:64px;height:64px;font-size:1rem;border-width:4px;}
+  .fam-hero h2{font-size:1.8rem;color:var(--teal-deep);margin-bottom:2px;}
+  .fam-hero p{margin:0;color:#5c6459;}
+  .back-link{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.85rem;color:var(--teal-deep);margin-bottom:18px;background:none;border:none;padding:0;}
+
+  .member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;margin-bottom:40px;}
+  .member-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:18px;position:relative;scroll-margin-top:120px;transition:box-shadow .2s;text-align:left;width:100%;}
+  .member-card.highlight{box-shadow:0 0 0 3px var(--coral);}
+  .member-card .avatar{width:58px;height:58px;font-size:1.05rem;margin-bottom:12px;}
+  .member-card h4{font-size:1.02rem;margin-bottom:2px;color:var(--name-blue);}
+  .member-card .bday{font-size:.83rem;color:var(--bday-green);font-weight:700;margin-bottom:8px;}
+  .member-card .rel-summary{display:flex;flex-direction:column;gap:5px;margin-top:8px;}
+  .rel-line{font-size:.83rem;color:#3c4438;line-height:1.4;}
+  .rel-line b{color:var(--teal-deep);font-weight:700;margin-right:3px;}
+  .rel-line.muted{color:#8b9186;font-style:italic;font-size:.8rem;}
+  a.rel-name{color:#5c6459;font-weight:600;text-decoration:none;border-bottom:1px dotted transparent;}
+  a.rel-name:hover{border-bottom-color:#5c6459;}
+  a.rel-name.auto{opacity:.82;}
+  .rel-summary.empty{color:#8b9186;font-style:italic;font-size:.85rem;}
+  .member-admin-btns{display:none;gap:6px;position:absolute;top:14px;right:14px;}
+  .admin-on .member-admin-btns{display:flex;}
+  .icon-btn{width:26px;height:26px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#fff;}
+  .icon-btn.edit{background:var(--teal);}
+  .icon-btn.del{background:var(--coral);}
+  .add-member-card{display:none;align-items:center;justify-content:center;border:2px dashed var(--teal);border-radius:var(--radius-card);min-height:180px;color:var(--teal-deep);font-weight:700;background:#F2FBF9;text-align:center;}
+  .admin-on .add-member-card{display:flex;}
+
+  .cta-row{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;}
+  .btn{border:none;padding:12px 22px;border-radius:var(--radius-pill);font-weight:700;font-size:.92rem;}
+  .btn.primary{background:var(--coral);color:#fff;}
+  .btn.ghost{background:transparent;border:1.5px solid var(--teal);color:var(--teal-deep);}
+
+  footer{padding:40px 24px;text-align:center;color:#8b9186;font-size:.85rem;}
+  .loading-note{padding:60px 0;text-align:center;color:#8b9186;}
+  .fallback-note{background:#FDF1DC;border:1px solid rgba(216,138,31,.35);border-radius:14px;padding:12px 18px;margin:20px 0;font-size:.85rem;color:#6b5a2f;}
+
+  /* member detail modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(36,43,37,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--paper);border-radius:20px;padding:28px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal h3{color:var(--teal-deep);}
+  .modal-close{float:right;border:none;background:none;font-size:1.3rem;color:#8b9186;}
+  .profile-top{display:flex;align-items:center;gap:16px;margin-bottom:8px;}
+  .profile-top .avatar{width:70px;height:70px;font-size:1.3rem;border-width:0;}
+  .profile-fam-link{font-size:.82rem;color:var(--teal-deep);font-weight:700;}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="mark"></span><span id="brandName">Famille Étoile-des-Îles</span></div>
+    <nav class="tabs" id="mainTabs">
+      <button data-page="accueil" class="active">Accueil</button>
+      <button data-page="sousfamilles">Sous-familles</button>
+      <button data-page="calendrier">Calendrier</button>
+    </nav>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="admin-toggle" id="adminToggle">◎ Mode webmestre</button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="mainContent">
+  <div class="loading-note" id="loadingNote">Chargement du registre familial…</div>
+</main>
+
+<footer>Prototype 1 (v2) — « Soleil de Famille » · les sous-familles s'ajoutent dynamiquement via <code>family-data.json</code></footer>
+
+<div class="modal-bg" id="memberModalBg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeMemberModal()">✕</button>
+    <div id="memberModalBody"></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="adminInfoBg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAdminInfo()">✕</button>
+    <h3>Édition (démo)</h3>
+    <p>Dans ce prototype, l'ajout et la modification de membres, de sous-familles et de photos se font depuis <b>l'outil du webmestre</b> (page admin.html séparée) : un formulaire qui produit un fichier <code>family-data.json</code> mis à jour à téléverser sur l'hébergement. Le site public ci-présent affiche toujours le contenu de ce fichier — aucune base de données requise.</p>
+    <button class="btn primary" onclick="closeAdminInfo()">Compris</button>
+  </div>
+</div>
+
+<script>
+let DATA = null;
+let memberIndex = {}; // id -> {member, family}
+let usingFallback = false;
+
+// Repli utilisé UNIQUEMENT si family-data.json est introuvable ou illisible (ex. page ouverte
+// directement en double-clic, sans hébergement). Volontairement vide : ainsi, ce que vous
+// voyez ici correspond toujours exactement au contenu réel de votre fichier — jamais de
+// données d'exemple qui pourraient prêter à confusion.
+const DEFAULT_DATA = {
+  "familyName": "Ma famille",
+  "founded": new Date().getFullYear(),
+  "familyEvents": [],
+  "subfamilies": []
+};
+
+async function loadData(){
+  try{
+    const res = await fetch('family-data.json', {cache:"no-store"});
+    if(!res.ok) throw new Error("fetch failed");
+    DATA = await res.json();
+  }catch(e){
+    // Repli automatique : le site reste fonctionnel même ouvert directement (sans serveur).
+    DATA = DEFAULT_DATA;
+    usingFallback = true;
+  }
+  return true;
+}
+
+function initials(name){ return name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
+function monthName(m){ return ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"][m-1]; }
+
+// ---------- Récapitulatif des liens familiaux, groupé par rôle ----------
+// Le type stocké décrit le lien du sujet vers la cible (ex. "Fils de" = le sujet est le fils de la cible).
+// Pour afficher "Père : X" sur la fiche du sujet, on prend le rôle INVERSE (ici PARENT), au genre de la cible.
+const KIND_OF_TYPE = {
+  "Époux de":{kind:"SPOUSE",sexe:"M"}, "Épouse de":{kind:"SPOUSE",sexe:"F"},
+  "Père de":{kind:"PARENT",sexe:"M"}, "Mère de":{kind:"PARENT",sexe:"F"},
+  "Fils de":{kind:"CHILD",sexe:"M"}, "Fille de":{kind:"CHILD",sexe:"F"},
+  "Frère de":{kind:"SIBLING",sexe:"M"}, "Sœur de":{kind:"SIBLING",sexe:"F"},
+  "Beau-frère de":{kind:"BELLE_FAMILLE",sexe:"M"}, "Belle-sœur de":{kind:"BELLE_FAMILLE",sexe:"F"},
+  "Oncle de":{kind:"UNCLE_AUNT",sexe:"M"}, "Tante de":{kind:"UNCLE_AUNT",sexe:"F"},
+  "Cousin de":{kind:"COUSIN",sexe:"M"}, "Cousine de":{kind:"COUSIN",sexe:"F"},
+  "Petit-cousin de":{kind:"PETIT_COUSIN",sexe:"M"}, "Petite-cousine de":{kind:"PETIT_COUSIN",sexe:"F"},
+  "Neveu de":{kind:"NIECE_NEPHEW",sexe:"M"}, "Nièce de":{kind:"NIECE_NEPHEW",sexe:"F"}
+};
+const INVERSE_KIND = { SPOUSE:"SPOUSE", PARENT:"CHILD", CHILD:"PARENT", SIBLING:"SIBLING", BELLE_FAMILLE:"BELLE_FAMILLE", COUSIN:"COUSIN", PETIT_COUSIN:"PETIT_COUSIN", UNCLE_AUNT:"NIECE_NEPHEW", NIECE_NEPHEW:"UNCLE_AUNT" };
+const ROLE_LABELS = {
+  PARENT:{M:["Père","Pères"], F:["Mère","Mères"]},
+  SPOUSE:{M:["Époux","Époux"], F:["Épouse","Épouses"]},
+  CHILD:{M:["Fils","Fils"], F:["Fille","Filles"]},
+  SIBLING:{M:["Frère","Frères"], F:["Sœur","Sœurs"]},
+  BELLE_FAMILLE:{M:["Beau-frère","Beaux-frères"], F:["Belle-sœur","Belles-sœurs"]},
+  UNCLE_AUNT:{M:["Oncle","Oncles"], F:["Tante","Tantes"]},
+  NIECE_NEPHEW:{M:["Neveu","Neveux"], F:["Nièce","Nièces"]},
+  COUSIN:{M:["Cousin","Cousins"], F:["Cousine","Cousines"]},
+  PETIT_COUSIN:{M:["Petit-cousin","Petits-cousins"], F:["Petite-cousine","Petites-cousines"]}
+};
+const ROLE_ORDER = ["PARENT_M","PARENT_F","SPOUSE_M","SPOUSE_F","CHILD_M","CHILD_F","SIBLING_M","SIBLING_F","BELLE_FAMILLE_M","BELLE_FAMILLE_F","UNCLE_AUNT_M","UNCLE_AUNT_F","NIECE_NEPHEW_M","NIECE_NEPHEW_F","COUSIN_M","COUSIN_F","PETIT_COUSIN_M","PETIT_COUSIN_F"];
+
+function guessSexe(m){
+  if(!m) return null;
+  if(m.sexe === 'M' || m.sexe === 'F') return m.sexe;
+  for(const r of (m.relations||[])){ const info = KIND_OF_TYPE[r.type]; if(info) return info.sexe; }
+  return null;
+}
+
+function joinNamesHtml(items){
+  const links = items.map(it=> `<a href="#" class="rel-name${it.auto?' auto':''}"${it.auto?' title="Lien déduit automatiquement"':''} onclick="event.preventDefault(); goToMember('${it.id}')">${it.name}</a>`);
+  if(links.length===1) return links[0];
+  if(links.length===2) return links.join(' et ');
+  return links.slice(0,-1).join(', ') + ' et ' + links[links.length-1];
+}
+
+function renderRelationSummary(member){
+  const groups = {};
+  const unresolved = [];
+  (member.relations||[]).forEach(r=>{
+    const info = KIND_OF_TYPE[r.type];
+    const targetEntry = memberIndex[r.target];
+    if(!info || !targetEntry){ unresolved.push(r.type); return; }
+    const roleKind = INVERSE_KIND[info.kind];
+    const targetSexe = guessSexe(targetEntry.member) || 'M';
+    const key = roleKind+'_'+targetSexe;
+    if(!groups[key]) groups[key] = { role:roleKind, sexe:targetSexe, items:[] };
+    groups[key].items.push({ id: targetEntry.member.id, name: targetEntry.member.name, auto: !!r.auto });
+  });
+  const keys = Object.keys(groups).sort((a,b)=> ROLE_ORDER.indexOf(a) - ROLE_ORDER.indexOf(b));
+  if(!keys.length && !unresolved.length) return `<div class="rel-summary empty">Aucun lien enregistré</div>`;
+  let html = `<div class="rel-summary">`;
+  keys.forEach(key=>{
+    const g = groups[key];
+    const labelPair = ROLE_LABELS[g.role][g.sexe];
+    const label = g.items.length > 1 ? labelPair[1] : labelPair[0];
+    html += `<div class="rel-line"><b>${label} :</b> ${joinNamesHtml(g.items)}</div>`;
+  });
+  if(unresolved.length) html += `<div class="rel-line muted"><b>Autres liens :</b> ${unresolved.join(', ')}</div>`;
+  html += `</div>`;
+  return html;
+}
+
+function buildIndex(){
+  memberIndex = {};
+  DATA.subfamilies.forEach(fam=>{
+    fam.members.forEach(m=> memberIndex[m.id] = {member:m, family:fam});
+  });
+}
+
+function avatarStyle(photoUrl, color){
+  return photoUrl ? `background-image:url('${photoUrl}')` : `background:${color}`;
+}
+
+function renderShell(){
+  document.getElementById('brandName').textContent = DATA.familyName;
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    ${usingFallback ? `<div class="fallback-note"><code>family-data.json</code> n'a pas pu être chargé (normal si la page est ouverte directement, sans hébergement, ou si le fichier n'existe pas encore à côté d'<code>index.html</code>). Le registre affiché ci-dessous est donc vide. Utilisez un serveur local ou déposez le fichier sur votre hébergement pour voir vos vraies données.</div>` : ``}
+    <section class="page active" id="accueil"></section>
+    <section class="page" id="sousfamilles"></section>
+    <section class="page" id="calendrier"></section>
+    <section class="page" id="famille-detail"></section>
+  `;
+  renderAccueil();
+  renderSousFamilles();
+  renderCalendrier();
+}
+
+function familyCardHTML(fam){
+  const parents = fam.members.filter(m=> m.relations.some(r=>r.type.startsWith("Épou")));
+  const duo = parents.slice(0,2).map(p=>`<div class="avatar" style="${avatarStyle(p.photo, fam.color)}">${p.photo?'':initials(p.name)}</div>`).join("");
+  return `
+    <button class="family-card" onclick="goToFamily('${fam.id}')">
+      <div class="duo">${duo}</div>
+      <h3>${fam.name}</h3>
+      <div class="parents">${parents.map(p=>p.name).join(" &amp; ")}<br>${fam.city} — depuis ${fam.since}</div>
+      <span class="go">Voir la famille →</span>
+    </button>`;
+}
+
+function renderAccueil(){
+  const el = document.getElementById('accueil');
+  const totalMembers = DATA.subfamilies.reduce((s,f)=>s+f.members.length,0);
+  const yearsSince = new Date().getFullYear() - DATA.founded;
+  el.innerHTML = `
+    <div class="hero">
+      <div>
+        <h1>Une grande famille, une histoire commune.</h1>
+        <p class="motto">« Unis par la foi, guidés par l'amour, engagés envers l'excellence. »</p>
+        <p class="lede">Depuis l'an ${DATA.founded}, notre famille a quitté le CAMEROUN pour bâtir sa vie au CANADA. Cet espace rassemble chacune de nos branches — pour que personne, ni proche ni cousin éloigné, ne se perde dans l'arbre.</p>
+        <div class="stats">
+          <div class="stat"><b>${totalMembers}+</b><span>membres recensés ici</span></div>
+          <div class="stat"><b>${DATA.subfamilies.length}</b><span>sous-familles au registre</span></div>
+          <div class="stat"><b>${yearsSince}</b><span>ans d'histoire au Canada</span></div>
+        </div>
+        <div class="cta-row">
+          <button class="btn primary" onclick="goTo('calendrier')">Voir le calendrier d'anniversaires</button>
+          <button class="btn ghost" onclick="document.getElementById('annuaire').scrollIntoView()">Chercher un membre</button>
+        </div>
+      </div>
+      <div class="sun-cluster" id="sunCluster"></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Les sous-familles</h2>
+      <p>De nouvelles branches peuvent être ajoutées à tout moment par le webmestre.</p>
+      <button class="see-all" onclick="goTo('sousfamilles')">Voir toutes les sous-familles →</button>
+    </div>
+    <div class="family-grid" id="homeFamilyGrid"></div>
+
+    <div class="section-head" id="annuaire">
+      <h2>Annuaire de la famille</h2>
+      <p>Tous les membres, classés par prénom. Cliquez sur un nom pour aller directement à sa fiche.</p>
+    </div>
+    <div class="directory">
+      <div class="directory-search">🔍 <input id="dirSearch" placeholder="Rechercher un prénom ou un nom…" oninput="filterDirectory()"></div>
+      <div class="directory-list" id="dirList"></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Galerie — événements de famille</h2>
+      <p>Réunions, baptêmes, anniversaires : un aperçu, avec la galerie complète sur chaque page de sous-famille.</p>
+    </div>
+    <div class="gallery-grid" id="homeGallery"></div>
+  `;
+
+  // sun cluster (dynamic, up to 6 satellites from first members of each family)
+  const sun = document.getElementById('sunCluster');
+  const positions = [
+    "left:6%;top:12%;","right:2%;top:6%;","right:-2%;top:56%;",
+    "right:20%;bottom:-2%;","left:2%;bottom:8%;","left:-4%;top:50%;"
+  ];
+  let sats = `<div class="sun-center">${DATA.familyName}</div>`;
+  DATA.subfamilies.slice(0,6).forEach((fam,i)=>{
+    const head = fam.members[0];
+    sats += `<div class="sat" style="${positions[i%positions.length]}${avatarStyle(head?head.photo:'', fam.color)}">${head&&!head.photo?initials(head.name):''}</div>`;
+  });
+  sun.innerHTML = sats;
+
+  // family grid (home preview: first 4)
+  const homeGrid = document.getElementById('homeFamilyGrid');
+  homeGrid.innerHTML = DATA.subfamilies.slice(0,4).map(familyCardHTML).join("") || `<p class="empty-note">Aucune sous-famille pour l'instant.</p>`;
+
+  // directory
+  const dirList = document.getElementById('dirList');
+  const rows = [];
+  DATA.subfamilies.forEach(fam=> fam.members.forEach(m=> rows.push({m, fam})));
+  rows.sort((a,b)=>a.m.name.localeCompare(b.m.name));
+  dirList.innerHTML = rows.map(({m,fam})=>`
+    <a class="dir-row" href="#" data-name="${m.name.toLowerCase()}" onclick="event.preventDefault(); goToMember('${m.id}')">
+      <div class="avatar" style="${avatarStyle(m.photo, fam.color)}">${m.photo?'':initials(m.name)}</div>
+      <div class="who"><b>${m.name}</b><small>${fam.name}</small></div>
+      <span class="arrow">→</span>
+    </a>`).join("") || `<p class="empty-note" style="padding:16px;">Aucun membre pour l'instant.</p>`;
+
+  // home gallery = familyEvents
+  document.getElementById('homeGallery').innerHTML =
+    (DATA.familyEvents||[]).map(p=>`<div class="photo-tile" style="background:${p.url?`url('${p.url}') center/cover`:p.color}"><span>${p.caption}</span><small>${p.date||''}</small></div>`).join("") +
+    `<div class="add-photo-tile">+ Ajouter des photos<br><small style="font-weight:500;">via l'outil du webmestre</small></div>`;
+}
+
+function renderSousFamilles(){
+  const el = document.getElementById('sousfamilles');
+  el.innerHTML = `
+    <div class="section-head" style="margin-top:32px;">
+      <h2>Toutes les sous-familles</h2>
+      <p>La liste s'agrandit au fur et à mesure que de nouvelles branches rejoignent le registre.</p>
+    </div>
+    <div class="toolbar-search"><input id="famSearch" placeholder="Rechercher une sous-famille…" oninput="filterFamilies()"></div>
+    <div class="family-grid" id="allFamilyGrid"></div>
+  `;
+  document.getElementById('allFamilyGrid').innerHTML = DATA.subfamilies.map(familyCardHTML).join("") || `<p class="empty-note">Aucune sous-famille pour l'instant.</p>`;
+}
+
+function filterFamilies(){
+  const q = document.getElementById('famSearch').value.toLowerCase();
+  document.querySelectorAll('#allFamilyGrid .family-card').forEach(card=>{
+    card.style.display = card.textContent.toLowerCase().includes(q) ? "" : "none";
+  });
+}
+
+function filterDirectory(){
+  const q = document.getElementById('dirSearch').value.toLowerCase();
+  document.querySelectorAll('#dirList .dir-row').forEach(row=>{
+    row.style.display = row.dataset.name.includes(q) ? "flex" : "none";
+  });
+}
+
+function renderCalendrier(){
+  const el = document.getElementById('calendrier');
+  const byMonth = {};
+  DATA.subfamilies.forEach(fam=> fam.members.forEach(m=>{
+    byMonth[m.month] = byMonth[m.month]||[];
+    byMonth[m.month].push({name:m.name, day:m.day, color:fam.color, id:m.id});
+  }));
+  let html = `<div class="section-head" style="margin-top:32px;"><h2>Calendrier des anniversaires</h2><p>Généré automatiquement à partir des dates de naissance de chaque membre.</p></div><div class="cal-grid">`;
+  for(let mo=1; mo<=12; mo++){
+    const entries = (byMonth[mo]||[]).sort((a,b)=>a.day-b.day);
+    html += `<div class="cal-month"><h4>${monthName(mo)}</h4>` + (entries.length
+      ? entries.map(e=>`<div class="cal-item" onclick="goToMember('${e.id}')"><div class="cal-date" style="background:${e.color}">${e.day}</div><div class="who"><b>${e.name}</b></div></div>`).join("")
+      : `<div class="cal-empty">Aucun anniversaire ce mois-ci</div>`) + `</div>`;
+  }
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+function renderFamilyPage(famId){
+  const fam = DATA.subfamilies.find(f=>f.id===famId);
+  const el = document.getElementById('famille-detail');
+  if(!fam){ el.innerHTML = `<p style="padding:40px 0;">Sous-famille introuvable.</p>`; return; }
+  const parents = fam.members.filter(m=> m.relations.some(r=>r.type.startsWith("Épou")));
+  const duo = parents.slice(0,2).map((p,i)=>`<div class="avatar" style="width:64px;height:64px;font-size:1rem;border-width:4px;${i?'margin-left:-18px;':''}${avatarStyle(p.photo, fam.color)}">${p.photo?'':initials(p.name)}</div>`).join("");
+  el.innerHTML = `
+    <button class="back-link" onclick="goTo('sousfamilles')">← Retour aux sous-familles</button>
+    <div class="fam-hero">
+      <div class="duo">${duo}</div>
+      <div><h2>${fam.name}</h2><p>${parents.map(p=>p.name).join(" & ")} — ${fam.city}, depuis ${fam.since}</p></div>
+    </div>
+    <div class="section-head" style="margin-top:0;"><h2 style="font-size:1.25rem;">Membres</h2></div>
+    <div class="member-grid" id="famMemberGrid"></div>
+    <div class="section-head"><h2 style="font-size:1.25rem;">Photos de la ${fam.name}</h2></div>
+    <div class="gallery-grid">
+      ${(fam.photos||[]).map(p=>`<div class="photo-tile" style="background:${p.url?`url('${p.url}') center/cover`:p.color}"><span>${p.caption}</span></div>`).join("")}
+      <div class="add-photo-tile">+ Ajouter des photos<br><small style="font-weight:500;">via l'outil du webmestre</small></div>
+    </div>
+  `;
+  const grid = document.getElementById('famMemberGrid');
+  grid.innerHTML = fam.members.map(m=>`
+    <div class="member-card" id="member-${m.id}">
+      <div class="member-admin-btns">
+        <button class="icon-btn edit" title="Modifier" onclick="showAdminInfo()">✎</button>
+        <button class="icon-btn del" title="Retirer" onclick="showAdminInfo()">✕</button>
+      </div>
+      <button class="avatar" style="${avatarStyle(m.photo, fam.color)};border:none;cursor:pointer;" onclick="goToMember('${m.id}')">${m.photo?'':initials(m.name)}</button>
+      <h4>${m.name}</h4>
+      <div class="bday">🎂 ${m.day} ${monthName(m.month)}</div>
+      ${renderRelationSummary(m)}
+    </div>`).join("") + `<div class="add-member-card" onclick="showAdminInfo()">+ Ajouter un membre<br><small style="font-weight:500;">via l'outil du webmestre</small></div>`;
+}
+
+function goToMember(id){
+  const entry = memberIndex[id];
+  if(!entry) return;
+  // show quick profile modal, with a button to jump to the full family page
+  const {member:m, family:fam} = entry;
+  document.getElementById('memberModalBody').innerHTML = `
+    <div class="profile-top">
+      <div class="avatar" style="width:70px;height:70px;font-size:1.3rem;border-width:0;${avatarStyle(m.photo, fam.color)}">${m.photo?'':initials(m.name)}</div>
+      <div><h3 style="margin-bottom:2px;">${m.name}</h3><div class="profile-fam-link">${fam.name} — ${fam.city}</div></div>
+    </div>
+    <p><b>🎂 Naissance :</b> ${m.day} ${monthName(m.month)}</p>
+    <p><b>Liens familiaux :</b></p>
+    ${renderRelationSummary(m)}
+    <div class="cta-row"><button class="btn primary" onclick="closeMemberModal(); goToFamily('${fam.id}', '${m.id}')">Voir la fiche complète dans sa branche</button></div>
+  `;
+  document.getElementById('memberModalBg').classList.add('show');
+}
+function closeMemberModal(){ document.getElementById('memberModalBg').classList.remove('show'); }
+function showAdminInfo(){ document.getElementById('adminInfoBg').classList.add('show'); }
+function closeAdminInfo(){ document.getElementById('adminInfoBg').classList.remove('show'); }
+
+function goTo(pageId){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  const target = document.getElementById(pageId);
+  if(target) target.classList.add("active");
+  document.querySelectorAll("#mainTabs button").forEach(b=>b.classList.toggle("active", b.dataset.page===pageId));
+  document.getElementById('mainTabs').classList.remove('open');
+  window.scrollTo({top:0, behavior:"smooth"});
+  location.hash = pageId === 'accueil' ? '' : pageId;
+}
+
+function goToFamily(famId, highlightMemberId){
+  renderFamilyPage(famId);
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById('famille-detail').classList.add("active");
+  document.querySelectorAll("#mainTabs button").forEach(b=>b.classList.remove("active"));
+  document.getElementById('mainTabs').classList.remove('open');
+  window.scrollTo({top:0, behavior:"smooth"});
+  location.hash = 'famille/'+famId;
+  if(highlightMemberId){
+    setTimeout(()=>{
+      const elm = document.getElementById('member-'+highlightMemberId);
+      if(elm){ elm.scrollIntoView({behavior:"smooth", block:"center"}); elm.classList.add('highlight'); setTimeout(()=>elm.classList.remove('highlight'), 1800); }
+    }, 80);
+  }
+}
+
+function handleHash(){
+  const h = location.hash.replace('#','');
+  if(h.startsWith('famille/')) goToFamily(h.split('/')[1]);
+  else if(['sousfamilles','calendrier'].includes(h)) goTo(h);
+  else goTo('accueil');
+}
+
+document.querySelectorAll("#mainTabs button").forEach(b=>b.addEventListener("click", ()=>goTo(b.dataset.page)));
+document.getElementById('hamburger').addEventListener('click', ()=> document.getElementById('mainTabs').classList.toggle('open'));
+
+const adminBtn = document.getElementById("adminToggle");
+adminBtn.addEventListener("click", ()=>{
+  document.body.classList.toggle("admin-on");
+  adminBtn.classList.toggle("on");
+  adminBtn.textContent = document.body.classList.contains("admin-on") ? "◉ Mode webmestre actif" : "◎ Mode webmestre";
+});
+
+(async function init(){
+  const ok = await loadData();
+  if(!ok) return;
+  buildIndex();
+  renderShell();
+  window.addEventListener('hashchange', handleHash);
+  handleHash();
+})();
+</script>
+</body>
+</html>
